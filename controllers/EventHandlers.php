@@ -59,6 +59,8 @@ class EventHandlers extends Base {
       } else {
         $oDocument->add('title', '회원 전용 글입니다.');
         $oDocument->add('content', '');
+        // 비공개 상태로 바꿔 isAccessible()이 거짓이 되게 한다. (코어 getThumbnail()이 즉시 종료되어 썸네일이 나오지 않음, 메모리상 값이며 DB는 변경되지 않음)
+        $oDocument->add('status', 'OTHER');
       }
     }
   }
