@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+  <title xml:lang="ko">회원 전용 게시글</title>
+  <description xml:lang="ko">확장변수(member_only)가 체크된 게시글을 로그인 회원에게만 보여줍니다.</description>
+  <version>1.0.0</version>
+  <date>2026-10-28</date>
+  <category>content</category>
+  <author email_address="80san@moonhouse.co.kr" link="https://moonhouse.co.kr">
+    <name xml:lang="ko">80san</name>
+  </author>
+</module>

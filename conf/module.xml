@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+  <actions>
+    <action name="dispMember_onlyAdminConfig" class="Controllers\Admin" menu-name="member_only" menu_index="true" admin_index="true" />
+    <action name="procMember_onlyAdminInsertConfig" class="Controllers\Admin" />
+  </actions>
+  <eventHandlers>
+    <eventHandler before="moduleObject.proc" class="Controllers\EventHandlers" method="beforeProc" />
+    <eventHandler after="document.getDocumentList" class="Controllers\EventHandlers" method="afterGetDocumentList" />
+    <eventHandler after="document.getNoticeList" class="Controllers\EventHandlers" method="afterGetDocumentList" />
+  </eventHandlers>
+  <menus>
+    <menu name="member_only">
+      <title xml:lang="ko">회원 전용 게시글</title>
+      <title xml:lang="en">Member-only Documents</title>
+    </menu>
+  </menus>
+</module>
