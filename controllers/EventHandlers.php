@@ -33,6 +33,10 @@ class EventHandlers extends Base {
 
     $oDocument = \DocumentModel::getDocument($documentSrl);
     if ($oDocument->isExists() && Filter::isMemberOnly($oDocument, $config)) {
+      if (!Session::isMember() && $obj->act === 'dispBoardContent') {
+        // 비로그인은 정식 로그인 화면으로 보내고, 로그인 후 이 글로 돌아오게 한다.
+        $obj->setRedirectUrl(getNotEncodedUrl('mid', $obj->mid, 'act', 'dispMemberLoginForm', 'referer_url', getNotEncodedFullUrl('', 'mid', $obj->mid, 'document_srl', $documentSrl)));
+      }
       return new \BaseObject(-1, Session::isMember() ? 'msg_not_permitted' : 'msg_not_logged');
     }
   }
