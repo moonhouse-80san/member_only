@@ -3,6 +3,8 @@
   <actions>
     <action name="dispMember_onlyAdminConfig" class="Controllers\Admin" menu-name="member_only" menu_index="true" admin_index="true" />
     <action name="procMember_onlyAdminInsertConfig" class="Controllers\Admin" />
+    <action name="dispMember_onlyPassword" class="Controllers\Unlock" />
+    <action name="procMember_onlyUnlock" class="Controllers\Unlock" />
   </actions>
   <eventHandlers>
     <eventHandler before="moduleObject.proc" class="Controllers\EventHandlers" method="beforeProc" />

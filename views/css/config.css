@@ -1,0 +1,536 @@
+/* ============================================================
+   member_only 관리자 CSS
+   triplepopup 관리자 화면(.triplepopup-admin)의 디자인을 그대로 가져와
+   .mo-* 네임스페이스로 분리한 스타일입니다.
+   모든 선택자는 .mo-admin 하위로 스코프되어 Rhymix 관리자 기본 스타일과 충돌하지 않습니다.
+   ============================================================ */
+
+.mo-admin {
+    /* ---- 색상 ---- */
+    --mo-accent: #0071e3;
+    --mo-accent-hover: #0077ed;
+    --mo-accent-soft: rgba(0,113,227,0.10);
+    --mo-accent-ring: rgba(0,113,227,0.16);
+    --mo-text: #1d1d1f;
+    --mo-text-sub: #62626a;
+    --mo-muted: #9a9aa2;
+    --mo-line: #c6c6cf;        /* 컨트롤 테두리 — 또렷하게 */
+    --mo-line-soft: #e0e0e6;   /* 구분선 */
+    --mo-bg-soft: #f5f5f7;
+    --mo-danger: #d70015;
+    --mo-danger-soft: #ffeceb;
+
+    /* ---- 폰트 계층 : 5단계만 사용 ---- */
+    --mo-fs-1: 11px;   /* 마이크로 : 칩 라벨 · 상태 pill · 메타 */
+    --mo-fs-2: 12px;   /* 보조     : 힌트 · 표 헤더 · 단위 */
+    --mo-fs-3: 14px;   /* 기준     : 라벨 · 입력값 · 표 셀 · 버튼 */
+    --mo-fs-4: 16px;   /* 소제목   : 카드 헤더 */
+    --mo-fs-5: 20px;   /* 대제목   : 페이지 타이틀 */
+
+    /* ---- 자간 : 계층별 1:1 대응 ---- */
+    --mo-ls-1: 0em;
+    --mo-ls-2: -0.002em;
+    --mo-ls-3: -0.008em;
+    --mo-ls-4: -0.016em;
+    --mo-ls-5: -0.024em;
+
+    /* ---- 행간 ---- */
+    --mo-lh-flat: 1;
+    --mo-lh-tight: 1.3;
+    --mo-lh-snug: 1.45;
+    --mo-lh-base: 1.6;
+    --mo-lh-loose: 1.7;
+
+    /* ---- 간격 (4px 그리드) ---- */
+    --mo-sp-1: 4px;
+    --mo-sp-2: 8px;
+    --mo-sp-3: 12px;
+    --mo-sp-4: 16px;
+    --mo-sp-5: 20px;
+    --mo-sp-6: 24px;
+    --mo-sp-7: 28px;
+
+    /* ---- 규격 ---- */
+    --mo-h-ctl: 40px;
+    --mo-h-ctl-sm: 32px;
+    --mo-pad-ctl: 13px;
+    --mo-r-ctl: 10px;
+    --mo-r-card: 16px;
+    --mo-bw: 1px;
+
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont,
+                 'SF Pro Display', 'SF Pro Text', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    font-size: var(--mo-fs-3);
+    font-weight: 400;
+    line-height: var(--mo-lh-base);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+    max-width: 1000px;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* ---------- 외부(Rhymix 관리자) 스타일 무력화 리셋 ---------- */
+.mo-admin,
+.mo-admin *,
+.mo-admin *::before,
+.mo-admin *::after { box-sizing: border-box; }
+
+.mo-admin input,
+.mo-admin select,
+.mo-admin textarea,
+.mo-admin button {
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 0;
+    max-width: 100%;
+    font-family: inherit;
+    font-size: var(--mo-fs-3);
+    font-weight: 400;
+    line-height: var(--mo-lh-flat);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+    vertical-align: middle;
+    box-shadow: none;
+    text-shadow: none;
+}
+.mo-admin input[type="text"],
+.mo-admin input[type="number"],
+.mo-admin input[type="date"],
+.mo-admin textarea,
+.mo-admin select {
+    height: auto;
+    background-color: #fff;
+    background-image: none;
+    border: var(--mo-bw) solid var(--mo-line);
+    border-radius: var(--mo-r-ctl);
+}
+.mo-admin button { background: none; border: 0; }
+.mo-admin p,
+.mo-admin h2 { margin: 0; }
+.mo-admin label { display: block; font-weight: 400; }
+.mo-admin img { max-width: 100%; }
+.mo-admin form { margin: 0; padding: 0; border: 0; background: none; }
+
+/* ---------- 헤더 ---------- */
+.mo-admin .mo-head { margin-bottom: var(--mo-sp-7); }
+.mo-admin .mo-head h2 {
+    margin: 0 0 var(--mo-sp-2);
+    font-size: var(--mo-fs-5);
+    font-weight: 700;
+    line-height: var(--mo-lh-tight);
+    letter-spacing: var(--mo-ls-5);
+}
+.mo-admin .mo-head-desc {
+    font-size: var(--mo-fs-3);
+    line-height: var(--mo-lh-base);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text-sub);
+}
+
+/* ---------- 카드 ---------- */
+.mo-admin .mo-card {
+    margin-bottom: var(--mo-sp-6);
+    background: #fff;
+    border: var(--mo-bw) solid var(--mo-line-soft);
+    border-radius: var(--mo-r-card);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 8px 26px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+.mo-admin .mo-card-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--mo-sp-2);
+    padding: var(--mo-sp-4) var(--mo-sp-6);
+    border-bottom: var(--mo-bw) solid var(--mo-line-soft);
+    font-size: var(--mo-fs-4);
+    font-weight: 600;
+    line-height: var(--mo-lh-snug);
+    letter-spacing: var(--mo-ls-4);
+}
+.mo-admin .mo-card-head-sub {
+    font-size: var(--mo-fs-2);
+    font-weight: 400;
+    line-height: var(--mo-lh-snug);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-muted);
+}
+.mo-admin .mo-card-body { padding: var(--mo-sp-6); }
+.mo-admin .mo-card-foot { margin-top: var(--mo-sp-6); }
+
+/* ---------- 하단 고정 저장 바 ---------- */
+.mo-admin .mo-savebar {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--mo-sp-3);
+    margin-top: var(--mo-sp-4);
+    padding: var(--mo-sp-4) var(--mo-sp-6);
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    border: var(--mo-bw) solid var(--mo-line-soft);
+    border-radius: var(--mo-r-card);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* ---------- 모듈 설정 폼 ---------- */
+.mo-admin .mo-form-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mo-sp-3);
+}
+.mo-admin .mo-form-row {
+    display: grid;
+    grid-template-columns: 148px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--mo-sp-4);
+    min-height: var(--mo-h-ctl);
+}
+.mo-admin .mo-label {
+    font-size: var(--mo-fs-3);
+    font-weight: 600;
+    line-height: var(--mo-lh-snug);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+}
+.mo-admin .mo-control { min-width: 0; }
+.mo-admin .mo-control-inline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--mo-sp-3);
+}
+.mo-admin .mo-unit {
+    font-size: var(--mo-fs-2);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-text-sub);
+}
+.mo-admin .mo-hint {
+    font-size: var(--mo-fs-2);
+    line-height: var(--mo-lh-base);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-muted);
+}
+.mo-admin .mo-hint b { color: var(--mo-text-sub); font-weight: 600; }
+
+/* ---------- 폼 컨트롤 ---------- */
+.mo-admin input.mo-input,
+.mo-admin select.mo-select {
+    display: block;
+    width: 100%;
+    height: var(--mo-h-ctl);
+    padding: 0 var(--mo-pad-ctl);
+    border: var(--mo-bw) solid var(--mo-line);
+    border-radius: var(--mo-r-ctl);
+    background-color: #fff;
+    font-size: var(--mo-fs-3);
+    line-height: var(--mo-lh-flat);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+    outline: none;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.mo-admin select.mo-select {
+    max-width: 220px;
+    padding-right: 34px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-overflow: ellipsis;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2362626a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--mo-pad-ctl) center;
+}
+.mo-admin select.mo-select::-ms-expand { display: none; }
+.mo-admin .mo-input-sm { width: 90px; }
+.mo-admin input.mo-input::placeholder { color: #b3b3bb; }
+.mo-admin input.mo-input:focus,
+.mo-admin select.mo-select:focus {
+    border-color: var(--mo-accent);
+    box-shadow: 0 0 0 3px var(--mo-accent-ring);
+}
+
+/* ---------- 버튼 ---------- */
+.mo-admin .mo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--mo-h-ctl);
+    padding: 0 var(--mo-sp-5);
+    border: var(--mo-bw) solid transparent;
+    border-radius: 980px;
+    font-size: var(--mo-fs-3);
+    font-weight: 600;
+    line-height: var(--mo-lh-flat);
+    letter-spacing: var(--mo-ls-3);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease;
+}
+.mo-admin .mo-btn:active { transform: scale(0.97); }
+.mo-admin .mo-btn-primary { background: var(--mo-accent); color: #fff; }
+.mo-admin .mo-btn-primary:hover { background: var(--mo-accent-hover); }
+.mo-admin .mo-btn-ghost {
+    height: var(--mo-h-ctl-sm);
+    padding: 0 var(--mo-sp-4);
+    background: var(--mo-bg-soft);
+    border-color: var(--mo-line-soft);
+    font-size: var(--mo-fs-2);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-text);
+}
+.mo-admin .mo-btn-ghost:hover { background: #e9e9ee; }
+.mo-admin .mo-btn-ghost.mo-is-active {
+    background: var(--mo-accent);
+    border-color: var(--mo-accent);
+    color: #fff;
+}
+.mo-admin .mo-btn-danger {
+    height: var(--mo-h-ctl-sm);
+    padding: 0 var(--mo-sp-4);
+    background: var(--mo-danger-soft);
+    border-color: #ffd9d6;
+    font-size: var(--mo-fs-2);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-danger);
+}
+.mo-admin .mo-btn-danger:hover { background: #ffdedb; }
+.mo-admin .mo-inline-form { display: inline-flex; }
+
+/* ---------- 안내 문구 ---------- */
+.mo-admin .mo-note {
+    margin: 0 0 var(--mo-sp-5);
+    padding: var(--mo-sp-3) var(--mo-sp-4);
+    border: var(--mo-bw) solid var(--mo-line-soft);
+    border-radius: var(--mo-r-ctl);
+    background: var(--mo-bg-soft);
+    font-size: var(--mo-fs-2);
+    line-height: var(--mo-lh-loose);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-text-sub);
+    word-break: keep-all;
+}
+.mo-admin .mo-note b { color: var(--mo-text); font-weight: 600; }
+
+/* ---------- 동작 모듈설정 ---------- */
+.mo-admin .mo-modtoolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--mo-sp-3);
+    padding: 0 2px var(--mo-sp-3);
+    margin-bottom: var(--mo-sp-4);
+    border-bottom: var(--mo-bw) solid var(--mo-line-soft);
+}
+.mo-admin .mo-modtoolbar .mo-modules-all {
+    height: var(--mo-h-ctl-sm);
+    padding: 0 var(--mo-sp-4);
+}
+.mo-admin .mo-modtools { display: flex; align-items: center; gap: var(--mo-sp-2); }
+.mo-admin select.mo-modsort-select {
+    width: auto;
+    min-width: 150px;
+    height: var(--mo-h-ctl-sm);
+}
+.mo-admin .mo-modcount {
+    font-size: var(--mo-fs-2);
+    line-height: var(--mo-lh-flat);
+    letter-spacing: var(--mo-ls-2);
+    color: var(--mo-muted);
+}
+.mo-admin .mo-modcount-num {
+    color: var(--mo-accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.mo-admin .mo-modules {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: var(--mo-sp-2);
+}
+.mo-admin .mo-module-item {
+    position: relative;
+    display: block;
+    min-width: 0;
+    padding: 12px var(--mo-sp-4);
+    border: var(--mo-bw) solid var(--mo-line-soft);
+    border-radius: 11px;
+    background: #fff;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+.mo-admin input.mo-module-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+.mo-admin .mo-module-item:hover { border-color: var(--mo-line); background: #fafafc; }
+.mo-admin .mo-module-item:focus-within {
+    border-color: var(--mo-accent);
+    box-shadow: 0 0 0 3px var(--mo-accent-ring);
+}
+.mo-admin .mo-module-item.mo-is-checked {
+    border-color: var(--mo-accent);
+    background: var(--mo-accent-soft);
+    box-shadow: inset 0 0 0 1px var(--mo-accent);
+}
+.mo-admin .mo-module-text { display: block; min-width: 0; }
+.mo-admin .mo-module-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    font-size: var(--mo-fs-3);
+    font-weight: 600;
+    line-height: var(--mo-lh-snug);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+}
+.mo-admin .mo-module-name > span:not(.mo-module-tag) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.mo-admin .mo-module-meta {
+    display: block;
+    margin-top: 3px;
+    font-size: var(--mo-fs-1);
+    line-height: var(--mo-lh-snug);
+    letter-spacing: var(--mo-ls-1);
+    color: var(--mo-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mo-admin .mo-module-sep { opacity: 0.55; margin: 0 3px; }
+.mo-admin .mo-module-tag {
+    flex: 0 0 auto;
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 980px;
+    font-size: var(--mo-fs-1);
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: var(--mo-ls-1);
+    color: var(--mo-accent);
+    background: var(--mo-accent-soft);
+}
+.mo-admin .mo-module-item.mo-is-checked .mo-module-tag { background: #fff; }
+
+.mo-admin .mo-empty-modules {
+    margin: 0;
+    padding: var(--mo-sp-6) 0;
+    text-align: center;
+    font-size: var(--mo-fs-3);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-muted);
+}
+
+
+/* 설정 폼 컨트롤 폭 */
+.mo-admin .mo-ctl { width: 168px; max-width: 100%; }
+.mo-admin select.mo-ctl { max-width: 168px; }
+.mo-admin select.mo-select-wide { width: 100%; max-width: 320px; }
+/* 텍스트 입력: 래퍼가 테두리·높이를 잡고 안쪽 입력은 꽉 채움 (관리자 기본 스타일의 영향을 받지 않도록 triplepopup 과 같은 구조) */
+.mo-admin .mo-inputwrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: var(--mo-h-ctl);
+    padding: 0;
+    border: var(--mo-bw) solid var(--mo-line);
+    border-radius: var(--mo-r-ctl);
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.mo-admin .mo-inputwrap:focus-within {
+    border-color: var(--mo-accent);
+    box-shadow: 0 0 0 3px var(--mo-accent-ring);
+}
+.mo-admin .mo-inputwrap.mo-input-w { max-width: 280px; }
+/* 관리자 기본 스타일(.x input[type="text"] { height:16px; border:... })보다 반드시 우선하도록 특이도를 높인다 */
+.mo-admin .mo-inputwrap input[type="text"].mo-input-flush,
+.mo-admin .mo-inputwrap input[type="password"].mo-input-flush {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0 var(--mo-pad-ctl);
+    border: 0;
+    border-radius: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    font-size: var(--mo-fs-3);
+    line-height: var(--mo-lh-flat);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+}
+.mo-admin .mo-inputwrap input[type="text"].mo-input-flush:focus,
+.mo-admin .mo-inputwrap input[type="password"].mo-input-flush:focus { border: 0; box-shadow: none; outline: none; }
+.mo-admin .mo-inputwrap input[type="text"].mo-input-flush::placeholder,
+.mo-admin .mo-inputwrap input[type="password"].mo-input-flush::placeholder { color: #b3b3bb; }
+/* 브라우저 자동완성 시 파란 배경이 입력칸만 칠해지지 않게 */
+.mo-admin .mo-inputwrap input[type="text"].mo-input-flush:-webkit-autofill,
+.mo-admin .mo-inputwrap input[type="password"].mo-input-flush:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px #fff inset;
+    -webkit-text-fill-color: var(--mo-text);
+}
+
+/* 컨트롤 아래에 설명을 세로로 배치 */
+.mo-admin .mo-control-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* 라디오 버튼 */
+.mo-admin .mo-radios { display: flex; flex-wrap: wrap; gap: var(--mo-sp-2) var(--mo-sp-5); }
+.mo-admin label.mo-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    font-size: var(--mo-fs-3);
+    line-height: var(--mo-lh-snug);
+    letter-spacing: var(--mo-ls-3);
+    color: var(--mo-text);
+    cursor: pointer;
+}
+.mo-admin input[type="radio"].mo-radio-input,
+.mo-admin input[type="checkbox"].mo-radio-input {
+    flex: 0 0 auto;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    accent-color: var(--mo-accent);
+    cursor: pointer;
+}
+.mo-admin .mo-module-tag-muted { color: var(--mo-text-sub); background: var(--mo-bg-soft); }
+.mo-admin .mo-module-item.mo-is-checked .mo-module-tag-muted { background: #fff; }
+
+.mo-admin .mo-hint-warn, .mo-admin .mo-hint-warn b { color: var(--mo-danger); }
+.mo-admin label.mo-radio-small { font-size: var(--mo-fs-2); letter-spacing: var(--mo-ls-2); color: var(--mo-text-sub); }

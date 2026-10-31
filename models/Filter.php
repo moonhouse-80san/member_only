@@ -32,6 +32,9 @@ class Filter {
     if (Session::isAdmin()) {
       return true;
     }
+    if (self::isUnlocked($config)) {
+      return true;
+    }
     if (!Session::isMember()) {
       return false;
     }
@@ -39,6 +42,55 @@ class Filter {
       return true;
     }
     return (bool)array_intersect($config->group_srls, array_keys(Session::getMemberInfo()->group_list ?: []));
+  }
+
+  /**
+   * 비밀번호 열람을 쓰는지 확인한다. '제목만 가리기' 방식에서 '로그인 또는 비밀번호'를 선택했을 때만 해당한다.
+   *
+   * @param object $config
+   * @return bool
+   */
+  public static function usePassword($config) {
+    return $config->use_password === 'Y' && $config->list_mode === 'mask';
+  }
+
+  /**
+   * 열람 비밀번호의 현재 상태 식별값. 비밀번호가 바뀌면 값이 달라져 기존 열람 허가가 무효가 된다.
+   *
+   * @param object $config
+   * @return string
+   */
+  public static function getUnlockToken($config) {
+    return hash('sha256', 'member_only|' . ($config->password_hash ?: 'default'));
+  }
+
+  /**
+   * 비밀번호로 열람 허가를 받은 방문자인지 확인한다. (설정: 로그인 또는 비밀번호)
+   *
+   * @param object $config
+   * @return bool
+   */
+  public static function isUnlocked($config) {
+    if (!self::usePassword($config)) {
+      return false;
+    }
+    $token = Session::get('member_only_unlock');
+    return is_string($token) && hash_equals(self::getUnlockToken($config), $token);
+  }
+
+  /**
+   * 입력한 비밀번호가 맞는지 확인한다. 별도로 지정하지 않았다면 기본 비밀번호(00000000)와 비교한다.
+   *
+   * @param object $config
+   * @param string $input
+   * @return bool
+   */
+  public static function checkPassword($config, $input) {
+    $input = (string)$input;
+    if ($config->password_hash) {
+      return password_verify($input, $config->password_hash);
+    }
+    return hash_equals('00000000', $input);
   }
 
   /**

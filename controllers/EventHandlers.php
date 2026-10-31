@@ -33,9 +33,16 @@ class EventHandlers extends Base {
 
     $oDocument = \DocumentModel::getDocument($documentSrl);
     if ($oDocument->isExists() && Filter::isMemberOnly($oDocument, $config)) {
-      if (!Session::isMember() && $obj->act === 'dispBoardContent') {
+      $usePassword = Filter::usePassword($config);
+      if ($usePassword && $obj->act === 'dispBoardContent') {
+        // 로그인 또는 비밀번호: 비밀번호 입력 화면으로 보낸다. (그 화면에서 로그인도 선택할 수 있다)
+        $obj->setRedirectUrl(getNotEncodedUrl('', 'module', 'member_only', 'act', 'dispMember_onlyPassword', 'mo_mid', $obj->mid, 'mo_srl', $documentSrl));
+      } elseif (!$usePassword && !Session::isMember() && $obj->act === 'dispBoardContent') {
         // 비로그인은 정식 로그인 화면으로 보내고, 로그인 후 이 글로 돌아오게 한다.
         $obj->setRedirectUrl(getNotEncodedUrl('mid', $obj->mid, 'act', 'dispMemberLoginForm', 'referer_url', getNotEncodedFullUrl('', 'mid', $obj->mid, 'document_srl', $documentSrl)));
+      }
+      if ($usePassword) {
+        return new \BaseObject(-1, '회원 전용 글입니다. 로그인하거나 비밀번호를 입력해 주세요.');
       }
       return new \BaseObject(-1, Session::isMember() ? 'msg_not_permitted' : 'msg_not_logged');
     }
