@@ -31,12 +31,13 @@
             <div class="mo-control mo-control-stack">
               <div class="mo-radios">
                 <label class="mo-radio"><input type="radio" name="list_mode" value="hide" class="mo-radio-input" @checked($config->list_mode === 'hide') /> <span>목록에서 숨기기</span></label>
-                <label class="mo-radio"><input type="radio" name="list_mode" value="mask" class="mo-radio-input" @checked($config->list_mode === 'mask') /> <span>제목만 가리기 ("회원 전용 글입니다.")</span></label>
+                <label class="mo-radio"><input type="radio" name="list_mode" value="mask" class="mo-radio-input" @checked($config->list_mode === 'mask') /> <span>제목(썸네일) 가리기 ("회원 전용 글입니다.")</span></label>
+                <label class="mo-radio"><input type="radio" name="list_mode" value="show" class="mo-radio-input" @checked($config->list_mode === 'show') /> <span>제목(썸네일) 출력</span></label>
               </div>
-              <span class="mo-hint">열람 권한이 없는 방문자에게 적용됩니다. 숨기기를 쓰면 페이지마다 보이는 글 수가 줄어들 수 있습니다. <b>제목만 가리기</b>를 고르면 아래에서 열람 방법(로그인 또는 비밀번호)을 정할 수 있습니다.</span>
+              <span class="mo-hint">열람 권한이 없는 방문자에게 적용됩니다. 숨기기를 쓰면 페이지마다 보이는 글 수가 줄어들 수 있습니다. <b>제목(썸네일) 가리기</b> 또는 <b>제목(썸네일) 출력</b>을 고르면 아래에서 열람 방법(로그인 또는 비밀번호)을 정할 수 있습니다. 제목(썸네일) 출력은 목록에 제목과 썸네일이 그대로 보이고, 글을 열 때만 열람 권한을 확인합니다.</span>
             </div>
           </div>
-          <div class="mo-form-row mo-access-row" @style(['display:none' => $config->list_mode !== 'mask'])>
+          <div class="mo-form-row mo-access-row" @style(['display:none' => $config->list_mode === 'hide'])>
             <span class="mo-label">열람 방법</span>
             <div class="mo-control mo-control-stack">
               <div class="mo-radios">
@@ -46,7 +47,7 @@
               <span class="mo-hint">'로그인 또는 비밀번호'를 고르면 로그인하지 않은 방문자도 <b>비밀번호를 입력해 회원 전용 글을 볼 수 있습니다.</b> (브라우저를 닫을 때까지 유지)</span>
             </div>
           </div>
-          <div class="mo-form-row mo-pw-row" @style(['display:none' => $config->list_mode !== 'mask' || $config->use_password !== 'Y'])>
+          <div class="mo-form-row mo-pw-row" @style(['display:none' => $config->list_mode === 'hide' || $config->use_password !== 'Y'])>
             <label class="mo-label" for="mo_view_password">열람 비밀번호</label>
             <div class="mo-control mo-control-stack">
               <div class="mo-inputwrap mo-input-w">

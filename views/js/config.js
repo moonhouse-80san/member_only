@@ -61,7 +61,7 @@
     refresh();
   }
 
-  // '제목만 가리기'를 고르면 열람 방법 줄을, 거기서 '로그인 또는 비밀번호'를 고르면 비밀번호 줄을 보여준다.
+  // '제목(썸네일) 가리기' 또는 '제목(썸네일) 출력'을 고르면 열람 방법 줄을, 거기서 '로그인 또는 비밀번호'를 고르면 비밀번호 줄을 보여준다.
   function initAccessRows() {
     var accessRow = document.querySelector('.mo-admin .mo-access-row');
     var pwRow     = document.querySelector('.mo-admin .mo-pw-row');
@@ -76,7 +76,8 @@
       return '';
     }
     function sync() {
-      var mask = (checkedValue(modeRadios) === 'mask');
+      var mode = checkedValue(modeRadios);
+      var mask = (mode === 'mask' || mode === 'show');
       accessRow.style.display = mask ? '' : 'none';
       pwRow.style.display = (mask && checkedValue(pwRadios) === 'Y') ? '' : 'none';
     }

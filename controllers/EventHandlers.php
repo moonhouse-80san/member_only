@@ -49,7 +49,7 @@ class EventHandlers extends Base {
   }
 
   /**
-   * document.getDocumentList / getNoticeList (after) - 허용되지 않은 방문자에게 제목과 내용을 가리거나 목록에서 뺀다. (설정: list_mode)
+   * document.getDocumentList / getNoticeList (after) - 허용되지 않은 방문자에게 제목과 내용을 가리거나, 제목(썸네일)만 보여주거나, 목록에서 뺀다. (설정: list_mode)
    *
    * @param \BaseObject $output
    * @return void
@@ -67,6 +67,9 @@ class EventHandlers extends Base {
       if ($config->list_mode === 'hide') {
         unset($output->data[$key]);
         $output->total_count = max(0, (int)$output->total_count - 1);
+      } elseif ($config->list_mode === 'show') {
+        // 제목과 썸네일은 그대로 두고 본문 요약만 비운다. (status는 건드리지 않아 썸네일이 정상 출력되며, 썸네일 원본은 코어가 DB에서 직접 읽는다)
+        $oDocument->add('content', '');
       } else {
         $oDocument->add('title', '회원 전용 글입니다.');
         $oDocument->add('content', '');

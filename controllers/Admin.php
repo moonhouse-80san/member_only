@@ -74,7 +74,7 @@ class Admin extends Base {
 
     $config = Config::getConfig();
     $config->eid = $eid;
-    $config->list_mode = ($vars->list_mode ?? '') === 'mask' ? 'mask' : 'hide';
+    $config->list_mode = in_array($vars->list_mode ?? '', ['mask', 'show'], true) ? $vars->list_mode : 'hide';
     $config->use_password = ($vars->use_password ?? '') === 'Y' ? 'Y' : 'N';
 
     // 열람 비밀번호: 입력했을 때만 변경(해시로 저장), '기본값으로 되돌리기'를 체크하면 기본 비밀번호(00000000)로 복귀

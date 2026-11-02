@@ -45,13 +45,13 @@ class Filter {
   }
 
   /**
-   * 비밀번호 열람을 쓰는지 확인한다. '제목만 가리기' 방식에서 '로그인 또는 비밀번호'를 선택했을 때만 해당한다.
+   * 비밀번호 열람을 쓰는지 확인한다. '제목(썸네일) 가리기'·'제목(썸네일) 출력' 방식에서 '로그인 또는 비밀번호'를 선택했을 때만 해당한다.
    *
    * @param object $config
    * @return bool
    */
   public static function usePassword($config) {
-    return $config->use_password === 'Y' && $config->list_mode === 'mask';
+    return $config->use_password === 'Y' && in_array($config->list_mode, ['mask', 'show'], true);
   }
 
   /**
