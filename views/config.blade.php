@@ -62,6 +62,13 @@
               <span class="mo-hint">4자 이상 입력해 주세요. 비밀번호를 바꾸면 이미 열람 중인 방문자는 다시 입력해야 합니다.</span>
             </div>
           </div>
+          <div class="mo-form-row">
+            <span class="mo-label">검색봇 허용</span>
+            <div class="mo-control mo-control-stack">
+              <label class="mo-radio"><input type="checkbox" name="allow_bots" value="Y" class="mo-radio-input" @checked($config->allow_bots === 'Y') /> <span>구글봇·네이버봇(Yeti)은 로그인 없이 열람 허용</span></label>
+              <span class="mo-hint">User-Agent만으로 판단하지 않고, 접속 IP를 역방향 DNS로 검증해 <b>실제 검색봇일 때만</b> 허용합니다. 허용하면 회원 전용 글의 내용이 검색결과 요약이나 캐시에 노출될 수 있으니, 개인정보가 포함된 글이 있다면 사용하지 마세요.</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -138,6 +145,27 @@
         @else
         <p class="mo-empty-modules">표시할 회원그룹이 없습니다.</p>
         @endif
+      </div>
+    </section>
+
+    <!-- 열람 레벨 -->
+    <section class="mo-card">
+      <div class="mo-card-head">
+        열람 레벨 <span class="mo-card-head-sub">글마다 레벨을 지정해 본문 보기를 제한</span>
+      </div>
+      <div class="mo-card-body">
+        <p class="mo-note">글의 확장변수 <b>{{ $config->level_eid }}</b> 에 숫자를 입력하면, <b>그 숫자 이상의 레벨인 방문자만</b> 본문을 볼 수 있습니다. 비워 두거나 0이면 제한이 없습니다. 방문자 레벨은 <b>회원 &gt; 포인트 &gt; 레벨 설정</b>의 기준(포인트가 쌓일수록 상승)을 따르며, 비로그인 방문자는 레벨 0, 관리자는 항상 볼 수 있습니다.</p>
+        <div class="mo-form-rows">
+          <div class="mo-form-row">
+            <label class="mo-label" for="mo_level_eid">레벨 확장변수 식별자</label>
+            <div class="mo-control mo-control-stack">
+              <div class="mo-inputwrap mo-input-w">
+                <input type="text" id="mo_level_eid" name="level_eid" value="{{ $config->level_eid }}" class="mo-input-flush" />
+              </div>
+              <span class="mo-hint">이 식별자의 확장변수 값(숫자)이 방문자 레벨보다 크면 본문을 볼 수 없습니다. 게시판 확장변수 관리에서 같은 식별자로 <b>텍스트</b> 유형 변수를 만들어 주세요. (기본 read_level_rh, 영문으로 시작하는 영문/숫자/밑줄)</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

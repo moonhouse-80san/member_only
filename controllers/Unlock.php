@@ -32,6 +32,13 @@ class Unlock extends Base {
       : getNotEncodedUrl('', 'act', 'dispMemberLoginForm'));
     \Context::set('is_member', Session::isMember());
 
+    // 비밀번호가 틀려서 돌아온 경우: 저장해 둔 오류 메시지를 한 번만 보여준다.
+    $error = (string)Session::get('member_only_pw_error');
+    if ($error !== '') {
+      Session::set('member_only_pw_error', '');
+    }
+    \Context::set('pw_error', $error);
+
     $this->setTemplatePath($this->module_path . 'views');
     $this->setTemplateFile('password.blade.php');
   }
@@ -48,21 +55,29 @@ class Unlock extends Base {
 
     $key = 'member_only:unlock_fail:' . md5(\RX_CLIENT_IP);
     $fails = (int)Cache::get($key);
+    // 되돌아갈 주소는 입력값을 그대로 쓰지 않고 mid·글 번호로 새로 만든다.
+    $mid = preg_replace('/[^a-zA-Z0-9_]/', '', (string)\Context::get('mo_mid'));
+    $srl = (int)\Context::get('mo_srl');
+
+    // 실패하면 오류 메시지를 저장하고 비밀번호 입력 화면으로 다시 보낸다. (화면 안에 직접 표시)
+    $backUrl = getNotEncodedUrl('', 'module', 'member_only', 'act', 'dispMember_onlyPassword', 'mo_mid', $mid, 'mo_srl', $srl);
+
     if ($fails >= 10) {
-      return $this->setError(-1, '비밀번호를 여러 번 잘못 입력했습니다. 잠시 후 다시 시도해 주세요.');
+      Session::set('member_only_pw_error', '비밀번호를 여러 번 잘못 입력했습니다. 잠시 후 다시 시도해 주세요.');
+      $this->setRedirectUrl($backUrl);
+      return;
     }
 
     if (!Filter::checkPassword($config, \Context::get('password'))) {
       Cache::set($key, $fails + 1, 600);
-      return $this->setError(-1, '비밀번호가 올바르지 않습니다.');
+      Session::set('member_only_pw_error', '비밀번호가 올바르지 않습니다. 다시 입력해 주세요.');
+      $this->setRedirectUrl($backUrl);
+      return;
     }
 
     Cache::delete($key);
     Session::set('member_only_unlock', Filter::getUnlockToken($config));
 
-    // 되돌아갈 주소는 입력값을 그대로 쓰지 않고 mid·글 번호로 새로 만든다.
-    $mid = preg_replace('/[^a-zA-Z0-9_]/', '', (string)\Context::get('mo_mid'));
-    $srl = (int)\Context::get('mo_srl');
     $this->setRedirectUrl($mid && $srl ? getNotEncodedUrl('', 'mid', $mid, 'document_srl', $srl) : getNotEncodedUrl(''));
   }
 }

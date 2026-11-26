@@ -72,10 +72,20 @@ class Admin extends Base {
       throw new InvalidRequest('확장변수 식별자는 영문으로 시작하는 영문/숫자/밑줄만 사용할 수 있습니다.');
     }
 
+    $levelEid = trim($vars->level_eid ?? '') ?: 'read_level_rh';
+    if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $levelEid)) {
+      throw new InvalidRequest('열람 레벨 확장변수 식별자는 영문으로 시작하는 영문/숫자/밑줄만 사용할 수 있습니다.');
+    }
+    if ($levelEid === $eid) {
+      throw new InvalidRequest('열람 레벨 확장변수 식별자는 회원 전용 확장변수 식별자와 달라야 합니다.');
+    }
+
     $config = Config::getConfig();
     $config->eid = $eid;
+    $config->level_eid = $levelEid;
     $config->list_mode = in_array($vars->list_mode ?? '', ['mask', 'show'], true) ? $vars->list_mode : 'hide';
     $config->use_password = ($vars->use_password ?? '') === 'Y' ? 'Y' : 'N';
+    $config->allow_bots = ($vars->allow_bots ?? '') === 'Y' ? 'Y' : 'N';
 
     // 열람 비밀번호: 입력했을 때만 변경(해시로 저장), '기본값으로 되돌리기'를 체크하면 기본 비밀번호(00000000)로 복귀
     $password = (string)($vars->view_password ?? '');

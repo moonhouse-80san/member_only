@@ -10,7 +10,8 @@ use Rhymix\Modules\Member_Only\Models\Filter;
  * MemberOnly event handlers (triggers).
  *
  * 설정한 게시판에서 확장변수(설정한 식별자)에 Y 가 포함된 게시글을
- * 허용되지 않은 방문자에게 숨깁니다.
+ * 허용되지 않은 방문자에게 숨깁니다. 또한 열람 레벨 확장변수(기본 read_level_rh)가
+ * 방문자 레벨보다 높은 게시글도 숨깁니다.
  */
 class EventHandlers extends Base {
 
@@ -27,25 +28,41 @@ class EventHandlers extends Base {
 
     $config = Config::getConfig();
     $documentSrl = (int)\Context::get('document_srl');
-    if (!$documentSrl || Filter::canView($config)) {
+    if (!$documentSrl || Session::isAdmin()) {
       return;
     }
 
     $oDocument = \DocumentModel::getDocument($documentSrl);
-    if ($oDocument->isExists() && Filter::isMemberOnly($oDocument, $config)) {
-      $usePassword = Filter::usePassword($config);
-      if ($usePassword && $obj->act === 'dispBoardContent') {
-        // 로그인 또는 비밀번호: 비밀번호 입력 화면으로 보낸다. (그 화면에서 로그인도 선택할 수 있다)
-        $obj->setRedirectUrl(getNotEncodedUrl('', 'module', 'member_only', 'act', 'dispMember_onlyPassword', 'mo_mid', $obj->mid, 'mo_srl', $documentSrl));
-      } elseif (!$usePassword && !Session::isMember() && $obj->act === 'dispBoardContent') {
-        // 비로그인은 정식 로그인 화면으로 보내고, 로그인 후 이 글로 돌아오게 한다.
+    if (!$oDocument->isExists()) {
+      return;
+    }
+
+    $reason = Filter::getRestriction($oDocument, $config);
+    if (!$reason) {
+      return;
+    }
+
+    // 열람 레벨이 부족한 글: 비로그인은 로그인 화면으로, 로그인 회원은 안내 메시지를 보여준다.
+    if ($reason === 'level') {
+      if (!Session::isMember() && $obj->act === 'dispBoardContent') {
         $obj->setRedirectUrl(getNotEncodedUrl('mid', $obj->mid, 'act', 'dispMemberLoginForm', 'referer_url', getNotEncodedFullUrl('', 'mid', $obj->mid, 'document_srl', $documentSrl)));
       }
-      if ($usePassword) {
-        return new \BaseObject(-1, '회원 전용 글입니다. 로그인하거나 비밀번호를 입력해 주세요.');
-      }
-      return new \BaseObject(-1, Session::isMember() ? 'msg_not_permitted' : 'msg_not_logged');
+      return new \BaseObject(-1, Session::isMember() ? '열람 레벨이 부족하여 이 글을 볼 수 없습니다.' : 'msg_not_logged');
     }
+
+    // 회원 전용 글
+    $usePassword = Filter::usePassword($config);
+    if ($usePassword && $obj->act === 'dispBoardContent') {
+      // 로그인 또는 비밀번호: 비밀번호 입력 화면으로 보낸다. (그 화면에서 로그인도 선택할 수 있다)
+      $obj->setRedirectUrl(getNotEncodedUrl('', 'module', 'member_only', 'act', 'dispMember_onlyPassword', 'mo_mid', $obj->mid, 'mo_srl', $documentSrl));
+    } elseif (!$usePassword && !Session::isMember() && $obj->act === 'dispBoardContent') {
+      // 비로그인은 정식 로그인 화면으로 보내고, 로그인 후 이 글로 돌아오게 한다.
+      $obj->setRedirectUrl(getNotEncodedUrl('mid', $obj->mid, 'act', 'dispMemberLoginForm', 'referer_url', getNotEncodedFullUrl('', 'mid', $obj->mid, 'document_srl', $documentSrl)));
+    }
+    if ($usePassword) {
+      return new \BaseObject(-1, '회원 전용 글입니다. 로그인하거나 비밀번호를 입력해 주세요.');
+    }
+    return new \BaseObject(-1, Session::isMember() ? 'msg_not_permitted' : 'msg_not_logged');
   }
 
   /**
@@ -56,12 +73,16 @@ class EventHandlers extends Base {
    */
   public function afterGetDocumentList($output) {
     $config = Config::getConfig();
-    if (empty($output->data) || Filter::canView($config)) {
+    if (empty($output->data) || Session::isAdmin()) {
       return;
     }
 
     foreach ($output->data as $key => $oDocument) {
-      if (!($oDocument instanceof \DocumentItem) || !Filter::isMemberOnly($oDocument, $config)) {
+      if (!($oDocument instanceof \DocumentItem)) {
+        continue;
+      }
+      $reason = Filter::getRestriction($oDocument, $config);
+      if (!$reason) {
         continue;
       }
       if ($config->list_mode === 'hide') {
@@ -71,7 +92,7 @@ class EventHandlers extends Base {
         // 제목과 썸네일은 그대로 두고 본문 요약만 비운다. (status는 건드리지 않아 썸네일이 정상 출력되며, 썸네일 원본은 코어가 DB에서 직접 읽는다)
         $oDocument->add('content', '');
       } else {
-        $oDocument->add('title', '회원 전용 글입니다.');
+        $oDocument->add('title', $reason === 'level' ? '열람 권한이 없는 글입니다.' : '회원 전용 글입니다.');
         $oDocument->add('content', '');
         // 비공개 상태로 바꿔 isAccessible()이 거짓이 되게 한다. (코어 getThumbnail()이 즉시 종료되어 썸네일이 나오지 않음, 메모리상 값이며 DB는 변경되지 않음)
         $oDocument->add('status', 'OTHER');

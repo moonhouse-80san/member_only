@@ -5,13 +5,16 @@
     <h2 class="mo-pw-title">회원 전용 글입니다</h2>
     <p class="mo-pw-desc">로그인하거나 비밀번호를 입력하면 이 글을 볼 수 있습니다.</p>
 
+    @if ($pw_error)
+    <p class="mo-pw-error" role="alert">{{ $pw_error }}</p>
+    @endif
+
     <form action="./" method="post" class="mo-pw-form">
       <input type="hidden" name="module" value="member_only" />
       <input type="hidden" name="act" value="procMember_onlyUnlock" />
       <input type="hidden" name="mo_mid" value="{{ $mo_mid }}" />
       <input type="hidden" name="mo_srl" value="{{ $mo_srl }}" />
-      <input type="hidden" name="error_return_url" value="{{ $pw_url }}" />
-      <input type="password" name="password" class="mo-pw-input" placeholder="비밀번호" autocomplete="off" required />
+      <input type="password" name="password" class="mo-pw-input@if ($pw_error) mo-pw-input-error@endif" placeholder="비밀번호" autocomplete="off" required @if ($pw_error) autofocus @endif />
       <button type="submit" class="mo-pw-btn mo-pw-btn-primary">확인</button>
     </form>
 
